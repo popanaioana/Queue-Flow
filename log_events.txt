@@ -1,0 +1,205 @@
+Time 0
+Waiting clients: (10, 2, 10), (1, 3, 7), (9, 8, 8), (3, 10, 5), (7, 12, 5), (6, 15, 6), (8, 19, 9), (2, 24, 9), (4, 24, 8), (5, 30, 5)
+Queue 1: closed
+Queue 2: closed
+
+Time 1
+Waiting clients: (10, 2, 10), (1, 3, 7), (9, 8, 8), (3, 10, 5), (7, 12, 5), (6, 15, 6), (8, 19, 9), (2, 24, 9), (4, 24, 8), (5, 30, 5)
+Queue 1: closed
+Queue 2: closed
+
+Time 2
+Waiting clients: (1, 3, 7), (9, 8, 8), (3, 10, 5), (7, 12, 5), (6, 15, 6), (8, 19, 9), (2, 24, 9), (4, 24, 8), (5, 30, 5)
+Queue 1: (10, 2, 10)
+Queue 2: closed
+
+Time 3
+Waiting clients: (9, 8, 8), (3, 10, 5), (7, 12, 5), (6, 15, 6), (8, 19, 9), (2, 24, 9), (4, 24, 8), (5, 30, 5)
+Queue 1: (10, 2, 9)
+Queue 2: (1, 3, 7)
+
+Time 4
+Waiting clients: (9, 8, 8), (3, 10, 5), (7, 12, 5), (6, 15, 6), (8, 19, 9), (2, 24, 9), (4, 24, 8), (5, 30, 5)
+Queue 1: (10, 2, 8)
+Queue 2: (1, 3, 6)
+
+Time 5
+Waiting clients: (9, 8, 8), (3, 10, 5), (7, 12, 5), (6, 15, 6), (8, 19, 9), (2, 24, 9), (4, 24, 8), (5, 30, 5)
+Queue 1: (10, 2, 8)
+Queue 2: (1, 3, 5)
+
+Time 6
+Waiting clients: (9, 8, 8), (3, 10, 5), (7, 12, 5), (6, 15, 6), (8, 19, 9), (2, 24, 9), (4, 24, 8), (5, 30, 5)
+Queue 1: (10, 2, 6)
+Queue 2: (1, 3, 4)
+
+Time 7
+Waiting clients: (9, 8, 8), (3, 10, 5), (7, 12, 5), (6, 15, 6), (8, 19, 9), (2, 24, 9), (4, 24, 8), (5, 30, 5)
+Queue 1: (10, 2, 5)
+Queue 2: (1, 3, 3)
+
+Time 8
+Waiting clients: (3, 10, 5), (7, 12, 5), (6, 15, 6), (8, 19, 9), (2, 24, 9), (4, 24, 8), (5, 30, 5)
+Queue 1: (10, 2, 4)
+Queue 2: (1, 3, 2), (9, 8, 8)
+
+Time 9
+Waiting clients: (3, 10, 5), (7, 12, 5), (6, 15, 6), (8, 19, 9), (2, 24, 9), (4, 24, 8), (5, 30, 5)
+Queue 1: (10, 2, 3)
+Queue 2: (1, 3, 1), (9, 8, 8)
+
+Time 10
+Waiting clients: (7, 12, 5), (6, 15, 6), (8, 19, 9), (2, 24, 9), (4, 24, 8), (5, 30, 5)
+Queue 1: (10, 2, 2), (3, 10, 5)
+Queue 2: (9, 8, 8)
+
+Time 11
+Waiting clients: (7, 12, 5), (6, 15, 6), (8, 19, 9), (2, 24, 9), (4, 24, 8), (5, 30, 5)
+Queue 1: (10, 2, 1), (3, 10, 5)
+Queue 2: (9, 8, 7)
+
+Time 12
+Waiting clients: (6, 15, 6), (8, 19, 9), (2, 24, 9), (4, 24, 8), (5, 30, 5)
+Queue 1: (3, 10, 5), (7, 12, 5)
+Queue 2: (9, 8, 6)
+
+Time 13
+Waiting clients: (6, 15, 6), (8, 19, 9), (2, 24, 9), (4, 24, 8), (5, 30, 5)
+Queue 1: (3, 10, 4), (7, 12, 5)
+Queue 2: (9, 8, 5)
+
+Time 14
+Waiting clients: (6, 15, 6), (8, 19, 9), (2, 24, 9), (4, 24, 8), (5, 30, 5)
+Queue 1: (3, 10, 3), (7, 12, 5)
+Queue 2: (9, 8, 4)
+
+Time 15
+Waiting clients: (8, 19, 9), (2, 24, 9), (4, 24, 8), (5, 30, 5)
+Queue 1: (3, 10, 2), (7, 12, 5)
+Queue 2: (9, 8, 3), (6, 15, 6)
+
+Time 16
+Waiting clients: (8, 19, 9), (2, 24, 9), (4, 24, 8), (5, 30, 5)
+Queue 1: (3, 10, 1), (7, 12, 5)
+Queue 2: (9, 8, 2), (6, 15, 6)
+
+Time 17
+Waiting clients: (8, 19, 9), (2, 24, 9), (4, 24, 8), (5, 30, 5)
+Queue 1: (7, 12, 5)
+Queue 2: (9, 8, 1), (6, 15, 6)
+
+Time 18
+Waiting clients: (8, 19, 9), (2, 24, 9), (4, 24, 8), (5, 30, 5)
+Queue 1: (7, 12, 4)
+Queue 2: (6, 15, 6)
+
+Time 19
+Waiting clients: (2, 24, 9), (4, 24, 8), (5, 30, 5)
+Queue 1: (7, 12, 3), (8, 19, 9)
+Queue 2: (6, 15, 5)
+
+Time 20
+Waiting clients: (2, 24, 9), (4, 24, 8), (5, 30, 5)
+Queue 1: (7, 12, 2), (8, 19, 9)
+Queue 2: (6, 15, 4)
+
+Time 21
+Waiting clients: (2, 24, 9), (4, 24, 8), (5, 30, 5)
+Queue 1: (7, 12, 1), (8, 19, 9)
+Queue 2: (6, 15, 3)
+
+Time 22
+Waiting clients: (2, 24, 9), (4, 24, 8), (5, 30, 5)
+Queue 1: (8, 19, 9)
+Queue 2: (6, 15, 2)
+
+Time 23
+Waiting clients: (2, 24, 9), (4, 24, 8), (5, 30, 5)
+Queue 1: (8, 19, 8)
+Queue 2: (6, 15, 1)
+
+Time 24
+Waiting clients: (5, 30, 5)
+Queue 1: (8, 19, 7), (4, 24, 8)
+Queue 2: (2, 24, 9)
+
+Time 25
+Waiting clients: (5, 30, 5)
+Queue 1: (8, 19, 6), (4, 24, 8)
+Queue 2: (2, 24, 8)
+
+Time 26
+Waiting clients: (5, 30, 5)
+Queue 1: (8, 19, 5), (4, 24, 8)
+Queue 2: (2, 24, 7)
+
+Time 27
+Waiting clients: (5, 30, 5)
+Queue 1: (8, 19, 4), (4, 24, 8)
+Queue 2: (2, 24, 6)
+
+Time 28
+Waiting clients: (5, 30, 5)
+Queue 1: (8, 19, 3), (4, 24, 8)
+Queue 2: (2, 24, 5)
+
+Time 29
+Waiting clients: (5, 30, 5)
+Queue 1: (8, 19, 2), (4, 24, 8)
+Queue 2: (2, 24, 4)
+
+Time 30
+Waiting clients: 
+Queue 1: (8, 19, 1), (4, 24, 8)
+Queue 2: (2, 24, 3), (5, 30, 5)
+
+Time 31
+Waiting clients: 
+Queue 1: (4, 24, 8)
+Queue 2: (2, 24, 2), (5, 30, 5)
+
+Time 32
+Waiting clients: 
+Queue 1: (4, 24, 7)
+Queue 2: (2, 24, 1), (5, 30, 5)
+
+Time 33
+Waiting clients: 
+Queue 1: (4, 24, 6)
+Queue 2: (5, 30, 5)
+
+Time 34
+Waiting clients: 
+Queue 1: (4, 24, 5)
+Queue 2: (5, 30, 4)
+
+Time 35
+Waiting clients: 
+Queue 1: (4, 24, 4)
+Queue 2: (5, 30, 3)
+
+Time 36
+Waiting clients: 
+Queue 1: (4, 24, 3)
+Queue 2: (5, 30, 2)
+
+Time 37
+Waiting clients: 
+Queue 1: (4, 24, 2)
+Queue 2: (5, 30, 1)
+
+Time 38
+Waiting clients: 
+Queue 1: (4, 24, 1)
+Queue 2: closed
+
+Time 39
+Waiting clients: 
+Queue 1: closed
+Queue 2: closed
+
+
+Simulation Over.
+Average Waiting Time: 9.70
+Average Service Time: 7.20
+Peak Hour: 15
