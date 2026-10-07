@@ -4,54 +4,43 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class Server implements Runnable{
-    private BlockingQueue<Task> tasks;
-    private AtomicInteger waitingPeriod;
-    private boolean isRunning;
+public class Server {
+
+    private final BlockingQueue<Task> tasks;
+    private final AtomicInteger waitingPeriod;
 
     public Server() {
         this.tasks = new LinkedBlockingQueue<>();
         this.waitingPeriod = new AtomicInteger(0);
-        this.isRunning = true;
     }
 
     public BlockingQueue<Task> getTasks() {
-        return this.tasks;
+        return tasks;
     }
 
     public int getWaitingPeriod() {
-        return this.waitingPeriod.get();
-    }
-
-    public void stop() {
-        this.isRunning = false;
+        return waitingPeriod.get();
     }
 
     public void addTask(Task task) {
+        if (task == null) {
+            return;
+        }
         tasks.add(task);
         waitingPeriod.addAndGet(task.getServiceTime());
     }
 
-    @Override
-    public void run() {
-        while (isRunning) {
-            try {
-                Task currentTask = tasks.peek();
-                if (currentTask != null) {
-                    int processingTime = currentTask.getServiceTime();
-                    while (processingTime > 0) {
-                        Thread.sleep(1000);
-                        --processingTime;
-                        currentTask.setServiceTime(processingTime);
-                        waitingPeriod.decrementAndGet();
-                        //Thread.sleep(1000);
-                    }
-                    tasks.poll();
-                }
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                break;
-            }
+    public void processOneSecond(int currentTime) {
+        Task currentTask = tasks.peek();
+        if (currentTask == null) {
+            return;
+        }
+        currentTask.setServiceStartTime(currentTime);
+        int remainingTime = currentTask.getServiceTime() - 1;
+        currentTask.setServiceTime(remainingTime);
+        waitingPeriod.decrementAndGet();
+        if (remainingTime <= 0) {
+            tasks.poll();
         }
     }
 }

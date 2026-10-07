@@ -2,24 +2,20 @@ package org.example.BusinessLogic;
 
 import org.example.Model.Server;
 import org.example.Model.Task;
+
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Scheduler {
-    private List<Server> servers;
-    private int maxNoServers;
-    private int maxTasksPerServer;
+
+    private final List<Server> servers;
     private Strategy strategy;
 
     public Scheduler(int maxNoServers, int maxTasksPerServer) {
-        this.maxNoServers = maxNoServers;
-        this.maxTasksPerServer = maxTasksPerServer;
         this.servers = new ArrayList<>();
         for (int i = 0; i < maxNoServers; i++) {
-            Server server = new Server();
-            servers.add(server);
-            Thread t = new Thread(server);
-            t.start();
+            servers.add(new Server());
         }
     }
 
@@ -28,14 +24,25 @@ public class Scheduler {
             strategy = new ShortestQueueStrategy();
         } else if (selectionPolicy == SelectionPolicy.SHORTEST_TIME) {
             strategy = new ShortestTimeStrategy();
+        } else {
+            throw new IllegalArgumentException("Unsupported selection policy: " + selectionPolicy);
         }
     }
 
     public void dispatchTask(Task task) {
+        if (strategy == null) {
+            throw new IllegalStateException("A scheduling strategy must be selected before dispatching tasks.");
+        }
         strategy.addTask(servers, task);
     }
 
+    public void processOneSecond(int currentTime) {
+        for (Server server : servers) {
+            server.processOneSecond(currentTime);
+        }
+    }
+
     public List<Server> getServers() {
-        return servers;
+        return Collections.unmodifiableList(servers);
     }
 }

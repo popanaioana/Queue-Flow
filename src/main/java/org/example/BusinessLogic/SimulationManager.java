@@ -14,46 +14,36 @@ import java.util.List;
 import java.util.Random;
 
 public class SimulationManager implements Runnable {
-    private Scheduler scheduler;
-    private SimulationFrame frame;
-    private List<Task> tasks;
-    private SelectionPolicy selectionPolicy;
-    private int timeLimit;
-    private int minArrivalTime;
-    private int maxArrivalTime;
-    private int minServiceTime;
-    private int maxServiceTime;
-    private int numberOfServers;
-    private int numberOfClients;
-    private double totalWaitingTime;
+    private final Scheduler scheduler;
+    private final SimulationFrame frame;
+    private final List<Task> tasks;
+    private final List<Task> allTasks;
+    private final int timeLimit;
+    private final int numberOfClients;
     private double totalServiceTime;
 
     public SimulationManager(int numberOfClients, int numberOfServers, int timeLimit, int minArrivalTime, int maxArrivalTime, int minServiceTime, int maxServiceTime, SelectionPolicy selectionPolicy, SimulationFrame frame) {
         this.numberOfClients = numberOfClients;
-        this.numberOfServers = numberOfServers;
         this.timeLimit = timeLimit;
-        this.minArrivalTime = minArrivalTime;
-        this.maxArrivalTime = maxArrivalTime;
-        this.minServiceTime = minServiceTime;
-        this.maxServiceTime = maxServiceTime;
-        this.selectionPolicy = selectionPolicy;
         this.frame = frame;
-        this.scheduler = new Scheduler(this.numberOfServers, 100);
-        this.scheduler.changeStrategy(this.selectionPolicy);
-        generateRandomTasks();
+        this.scheduler = new Scheduler(numberOfServers, 100);
+        this.scheduler.changeStrategy(selectionPolicy);
+        this.tasks = generateRandomTasks(numberOfClients, minArrivalTime, maxArrivalTime, minServiceTime, maxServiceTime);
+        this.allTasks = new ArrayList<>(tasks);
     }
 
-    private void generateRandomTasks() {
-        this.tasks = new ArrayList<>();
-        this.totalServiceTime = 0;
+    private List<Task> generateRandomTasks(int numberOfClients, int minArrivalTime, int maxArrivalTime, int minServiceTime, int maxServiceTime) {
+        List<Task> generatedTasks = new ArrayList<>();
         Random random = new Random();
-        for (int i = 1; i <= this.numberOfClients; i++) {
-            int randomArrivalTime = random.nextInt(maxArrivalTime - minArrivalTime + 1) + minArrivalTime;
-            int randomServiceTime = random.nextInt(maxServiceTime - minServiceTime + 1) + minServiceTime;
-            tasks.add(new Task(i, randomArrivalTime, randomServiceTime));
-            this.totalServiceTime += randomServiceTime;
+        totalServiceTime = 0;
+        for (int i = 1; i <= numberOfClients; i++) {
+            int arrivalTime = random.nextInt(maxArrivalTime - minArrivalTime + 1) + minArrivalTime;
+            int serviceTime = random.nextInt(maxServiceTime - minServiceTime + 1) + minServiceTime;
+            generatedTasks.add(new Task(i, arrivalTime, serviceTime));
+            totalServiceTime += serviceTime;
         }
-        Collections.sort(tasks);
+        Collections.sort(generatedTasks);
+        return generatedTasks;
     }
 
     @Override
@@ -63,52 +53,59 @@ public class SimulationManager implements Runnable {
         int peakHour = 0;
         try (PrintWriter logWriter = new PrintWriter(new FileWriter("log_events.txt"))) {
             while (currentTime <= timeLimit) {
-                Iterator<Task> iterator = tasks.iterator();
-                while (iterator.hasNext()) {
-                    Task t = iterator.next();
-                    if (t.getArrivalTime() == currentTime) {
-                        scheduler.dispatchTask(t);
-                        iterator.remove();
-                    }
-                }
-                int currentClientsInQueue = 0;
-                for (Server s : scheduler.getServers()) {
-                    int queueSize = s.getTasks().size();
-                    totalWaitingTime += queueSize;
-                    currentClientsInQueue += queueSize;
-                }
+                dispatchArrivingTasks(currentTime);
+                int currentClientsInQueue = calculateCurrentClientsInQueues();
                 if (currentClientsInQueue > maxClientsAtATime) {
                     maxClientsAtATime = currentClientsInQueue;
                     peakHour = currentTime;
                 }
                 String logEntry = generateLogString(currentTime);
                 logWriter.println(logEntry);
-                frame.updateLog(logEntry);
+                logWriter.flush();
+                frame.updateSimulation(logEntry, scheduler.getServers(), currentTime, tasks.size());
                 if (tasks.isEmpty() && areQueuesEmpty()) {
                     break;
                 }
-                ++currentTime;
                 Thread.sleep(1000);
+                scheduler.processOneSecond(currentTime);
+                currentTime++;
             }
-            /*for (Server s : scheduler.getServers()) {
-                s.stop();
-            }*/
-            double avgWaiting = calculateAverageWaiting();
-            double avgService = calculateAverageServiceTime();
-            String finalStats = "\nSimulation Over.\n" +
-                    "Average Waiting Time: " + String.format("%.2f", avgWaiting) + "\n" +
-                    "Average Service Time: " + String.format("%.2f", avgService) + "\n" +
-                    "Peak Hour: " + peakHour;
+            double averageWaitingTime = calculateAverageWaiting();
+            double averageServiceTime = calculateAverageServiceTime();
+            String finalStats ="\nSimulation Over.\n" + "Average Waiting Time: " + String.format("%.2f", averageWaitingTime) + "\nAverage Service Time: " + String.format("%.2f", averageServiceTime) + "\nPeak Hour: " + peakHour;
             logWriter.println(finalStats);
+            logWriter.flush();
             frame.updateLog(finalStats);
-        } catch (IOException | InterruptedException e) {
+            frame.simulationFinished();
+        } catch (IOException e) {
             e.printStackTrace();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
         }
     }
 
+    private void dispatchArrivingTasks(int currentTime) {
+        Iterator<Task> iterator = tasks.iterator();
+        while (iterator.hasNext()) {
+            Task task = iterator.next();
+            if (task.getArrivalTime() == currentTime) {
+                scheduler.dispatchTask(task);
+                iterator.remove();
+            }
+        }
+    }
+
+    private int calculateCurrentClientsInQueues() {
+        int currentClients = 0;
+        for (Server server : scheduler.getServers()) {
+            currentClients += server.getTasks().size();
+        }
+        return currentClients;
+    }
+
     private boolean areQueuesEmpty() {
-        for (Server s : scheduler.getServers()) {
-            if (!s.getTasks().isEmpty()) {
+        for (Server server : scheduler.getServers()) {
+            if (!server.getTasks().isEmpty()) {
                 return false;
             }
         }
@@ -119,30 +116,31 @@ public class SimulationManager implements Runnable {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("Time ").append(currentTime).append("\n");
         stringBuilder.append("Waiting clients: ");
-        for (int i = 0; i < tasks.size(); ++i) {
-            Task t = tasks.get(i);
-            stringBuilder.append("(").append(t.getID()).append(", ").append(t.getArrivalTime()).append(", ").append(t.getServiceTime()).append(")");
+        for (int i = 0; i < tasks.size(); i++) {
+            Task task = tasks.get(i);
+            stringBuilder.append("(").append(task.getID()).append(", ").append(task.getArrivalTime()).append(", ").append(task.getServiceTime()).append(")");
             if (i < tasks.size() - 1) {
                 stringBuilder.append(", ");
             }
         }
         stringBuilder.append("\n");
         List<Server> servers = scheduler.getServers();
-        for (int i = 0; i < servers.size(); ++i) {
+        for (int i = 0; i < servers.size(); i++) {
+            Server server = servers.get(i);
             stringBuilder.append("Queue ").append(i + 1).append(": ");
-            if (servers.get(i).getTasks().isEmpty()) {
-                stringBuilder.append("closed\n");
+            if (server.getTasks().isEmpty()) {
+                stringBuilder.append("closed");
             } else {
-                int j = 0;
-                for (Task t : servers.get(i).getTasks()) {
-                    stringBuilder.append("(").append(t.getID()).append(", ").append(t.getArrivalTime()).append(", ").append(t.getServiceTime()).append(")");
-                    if (j < servers.get(i).getTasks().size() - 1) {
+                int taskIndex = 0;
+                for (Task task : server.getTasks()) {
+                    stringBuilder.append("(").append(task.getID()).append(", ").append(task.getArrivalTime()).append(", ").append(task.getServiceTime()).append(")");
+                    if (taskIndex < server.getTasks().size() - 1) {
                         stringBuilder.append(", ");
                     }
-                    ++j;
+                    taskIndex++;
                 }
-                stringBuilder.append("\n");
             }
+            stringBuilder.append("\n");
         }
         return stringBuilder.toString();
     }
@@ -151,13 +149,19 @@ public class SimulationManager implements Runnable {
         if (numberOfClients == 0) {
             return 0.0;
         }
+        double totalWaitingTime = 0;
+        for (Task task : allTasks) {
+            totalWaitingTime += task.getWaitingTime();
+        }
         return totalWaitingTime / numberOfClients;
     }
 
     private double calculateAverageServiceTime() {
+
         if (numberOfClients == 0) {
             return 0.0;
         }
+
         return totalServiceTime / numberOfClients;
     }
 }

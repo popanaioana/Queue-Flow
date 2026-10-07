@@ -1,30 +1,56 @@
 package org.example.Model;
 
-public class Task implements Comparable<Task>{
-    private int ID;
-    private int arrivalTime;
+public class Task implements Comparable<Task> {
+
+    private final int ID;
+    private final int arrivalTime;
+    private final int initialServiceTime;
+
     private int serviceTime;
+    private int serviceStartTime = -1;
 
     public Task(int ID, int arrivalTime, int serviceTime) {
         this.ID = ID;
         this.arrivalTime = arrivalTime;
         this.serviceTime = serviceTime;
+        this.initialServiceTime = serviceTime;
     }
 
     public int getID() {
-        return this.ID;
+        return ID;
     }
 
     public int getArrivalTime() {
-        return this.arrivalTime;
+        return arrivalTime;
     }
 
     public int getServiceTime() {
-        return this.serviceTime;
+        return serviceTime;
+    }
+
+    public int getInitialServiceTime() {
+        return initialServiceTime;
+    }
+
+    public int getServiceStartTime() {
+        return serviceStartTime;
     }
 
     public void setServiceTime(int serviceTime) {
         this.serviceTime = serviceTime;
+    }
+
+    public void setServiceStartTime(int serviceStartTime) {
+        if (this.serviceStartTime == -1) {
+            this.serviceStartTime = serviceStartTime;
+        }
+    }
+
+    public int getWaitingTime() {
+        if (serviceStartTime == -1) {
+            return 0;
+        }
+        return serviceStartTime - arrivalTime;
     }
 
     @Override
@@ -34,6 +60,6 @@ public class Task implements Comparable<Task>{
 
     @Override
     public String toString() {
-        return this.ID + " " + this.arrivalTime + " " + this.serviceTime + "\n";
+        return ID + " " + arrivalTime + " " + serviceTime + "\n";
     }
 }
